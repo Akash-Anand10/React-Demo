@@ -22,7 +22,7 @@ type CardProps = {
 
 export default function Section({name, index}: CardProps){
     return(
-        <Draggable draggableId={index.toString()} index={index} key={index}>
+        <Draggable draggableId={index.toString()} index={index} key={index} >
             {(provided, snapshot) => (
                     <SectionContainer
                     {...provided.draggableProps}

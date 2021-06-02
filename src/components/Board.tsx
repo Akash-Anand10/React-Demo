@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import styled from "styled-components"
 import Section from "./Section"
 import { data } from "./models/data"
@@ -16,10 +16,19 @@ export default function Board() {
     flex-direction: row;
     `
 
-    const onDragEnd = () => {
+    const onDragEnd = (result: any) => {
         //todo
+        const newSecs = Array.from(secs);
+        const sourceIndex = result.source.index;
+        const destinationIndex = result.destination.index;
+        newSecs.splice(sourceIndex, 1);
+        newSecs.splice(destinationIndex, 0, secs[sourceIndex]);
+        setSecs(newSecs);
     }
-    const Sections = Object.keys(data).map((section, index) => <Section name={data[section].title} index={index}/>)
+
+    const [secs, setSecs] = useState(Object.keys(data));
+    
+    const Sections = secs?.map((section, index) => <Section name={data[section].title} index={index} key={index}/>)
 
     return(
         <>
