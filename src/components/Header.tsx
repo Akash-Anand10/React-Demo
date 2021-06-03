@@ -1,15 +1,15 @@
 import styled from 'styled-components'
 
 const HeaderContainer = styled.div`
-        width: auto;
-        background-color: rgba(0, 0, 0, 0.20);
-        display: flex;
-        flex-direction: row;
-        align-content: center;
-        justify-items: center;
-        justify-content: space-between;
-        padding: 3px;
-    `
+    width: auto;
+    background-color: rgba(0, 0, 0, 0.20);
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-items: center;
+    justify-content: space-between;
+    padding: 3px;
+`
 const LogoContainer = styled.div`
     padding: 2px;
 `

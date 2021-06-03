@@ -4,17 +4,18 @@ import Section from "./Section"
 import { data } from "./models/data"
 import { DragDropContext, Droppable } from "react-beautiful-dnd"
 
-export default function Board() {
-    const SectionsContainer = styled.div`
-        height: 95%;
-        display: flex;
-        flex-direction: row;
-        overflow-x: auto;
-    `
-    const SectionHeader = styled.div`
+const SectionsContainer = styled.div`
+    height: 95%;
     display: flex;
     flex-direction: row;
-    `
+    overflow-x: auto;
+`
+const SectionHeader = styled.div`
+display: flex;
+flex-direction: row;
+`
+
+export default function Board() {
 
     const onDragEnd = (result: any) => {
         //todo
@@ -28,7 +29,7 @@ export default function Board() {
 
     const [secs, setSecs] = useState(Object.keys(data));
     
-    const Sections = secs?.map((section, index) => <Section name={data[section].title} index={index} key={index}/>)
+    const Sections = secs?.map((section, index) => <Section section = {section} index={index} key={index}/>)
 
     return(
         <>
