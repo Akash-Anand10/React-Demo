@@ -1,11 +1,10 @@
 import React, { useState } from "react"
 import styled from "styled-components"
 import Section from "./Section"
-import { data } from "./models/data"
-import { DragDropContext, Droppable } from "react-beautiful-dnd"
+import { allTickets, data } from "./models/data"
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd"
 
 const SectionsContainer = styled.div`
-    height: 95%;
     display: flex;
     flex-direction: row;
     overflow-x: auto;
@@ -17,19 +16,67 @@ flex-direction: row;
 
 export default function Board() {
 
-    const onDragEnd = (result: any) => {
+    const onDragEnd = (result: DropResult) => {
         //todo
-        const newSecs = Array.from(secs);
-        const sourceIndex = result.source.index;
-        const destinationIndex = result.destination.index;
-        newSecs.splice(sourceIndex, 1);
-        newSecs.splice(destinationIndex, 0, secs[sourceIndex]);
-        setSecs(newSecs);
+        if(result.type === "BOARD"){
+            if(!result.destination) {
+                return;
+            }
+            if (result.destination.droppableId === result.source.droppableId &&
+                result.destination.index === result.source.index
+                ){
+                    return;
+                }
+            const newSecs = Array.from(secs);
+            const sourceIndex = result.source.index;
+            const destinationIndex = result.destination.index;
+            newSecs.splice(sourceIndex, 1);
+            newSecs.splice(destinationIndex, 0, secs[sourceIndex]);
+            setSecs(newSecs);
+        }
+        
+        if(result.type === "SECTION"){
+            if(result.destination?.droppableId === result.source.droppableId){
+                // ticket was moved in same section
+                const newTicketData = {...ticketsData};
+                const sourceIndex = result.source.index;
+                const destinationIndex = result.destination.index;
+                const ticketSection = result.source.droppableId;
+                newTicketData[ticketSection].tickets.splice(sourceIndex, 1);
+                newTicketData[ticketSection].tickets.splice(destinationIndex, 0, result.draggableId);
+                setTicketsData(newTicketData);
+                console.log(newTicketData);
+            }else{
+                // ticket was moved in different section
+                if(!result.destination) {
+                    return;
+                }else{
+                    const newTicketData = {...ticketsData};
+                const sourceIndex = result.source.index;
+                const destinationIndex = result.destination?.index;
+                const sourceSection = result.source.droppableId;
+                const destinationSection = result.destination.droppableId;
+                newTicketData[sourceSection].tickets.splice(sourceIndex, 1);
+                newTicketData[destinationSection].tickets.splice(destinationIndex, 0, result.draggableId);
+                setTicketsData(newTicketData);
+                console.log(newTicketData);
+                }
+            }
+        }
+        console.log(result)
+        
     }
 
     const [secs, setSecs] = useState(Object.keys(data));
     
-    const Sections = secs?.map((section, index) => <Section section = {section} index={index} key={index}/>)
+    const [ticketsData, setTicketsData] = useState(data);
+    
+    const Sections = secs?.map((section, index) => {
+        return(
+        <Section section = {section} index={index} key={index} tickets={ticketsData[section].tickets}/>
+        )
+    })
+    
 
     return(
         <>

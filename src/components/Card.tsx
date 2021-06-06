@@ -2,7 +2,8 @@ import styled from "styled-components"
 import { Draggable } from "react-beautiful-dnd"
 
 const CardContainer = styled.div`
-    min-height: 100px;
+    height: 100px;
+    max-height: 100px;
     background-color: white;
     padding: 2px;
     margin: 3px;
@@ -14,19 +15,28 @@ const CardContent = styled.div`
 
 `
 
-const Card = ({index}: CardProps) => {
+const Card = ({index, id, content}: CardProps) => {
     return (
-        // <Draggable key={card.id}>
-            
-        // </Draggable>
-        <CardContainer>
-            <CardContent>
-            </CardContent>
-        </CardContainer>
+        <Draggable draggableId={id} index={index} key={id} >
+            {(provided) => (
+                <CardContainer 
+                {...provided.draggableProps} 
+                {...provided.dragHandleProps}
+                ref={provided.innerRef}
+                >
+                    <CardContent>
+                        {content}
+                    </CardContent>
+                </CardContainer>
+            )}
+        </Draggable>
+        
     )
 }
 
 type CardProps ={
-    index: number
+    index: number,
+    content: string,
+    id: string
 }
 export default Card;
