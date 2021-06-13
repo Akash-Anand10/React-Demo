@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { Draggable, Droppable } from "react-beautiful-dnd"
-import { data, allTickets } from "./models/data"
 import Card from "./Card"
+import { useAppSelector } from "../hooks"
 
 const SectionContainer = styled.div`
     width: 300px;
@@ -12,7 +12,6 @@ const SectionContainer = styled.div`
     margin-top: 6px;
     border-radius: 3px;
     display: flex;
-    flex-grow: 1;
     flex-direction: column;
     overflow-y: auto;
 `
@@ -23,13 +22,20 @@ const SectionName = styled.h3`
     margin: 5px;
 `
 
-export default function Section({section, index, tickets}: SectionProps){
+export default function Section({sectionId, index}: SectionProps){
 
-    const Cards = tickets?.map((ticket, index) => <Card index={index} 
-    id={ticket} content={allTickets[ticket].content} key={index}/>)
+    const sectionTicketIds: string[] = useAppSelector(state => state.sections.byId[sectionId].tickets);
+    const allTickets_ = useAppSelector(state => state.tickets.byId);
+    const tickets_ = sectionTicketIds.map(ticketId => allTickets_[ticketId])
+    
+    const Cards = tickets_?.map((ticket, index) => {
+        return(
+            <Card index={index} ticketId={ticket?.id} content={ticket?.content}/>
+        )
+    })
 
     return(
-        <Draggable draggableId={section} index={index} key={section} >
+        <Draggable draggableId={sectionId} index={index} key={sectionId} >
             {(provided, snapshot) => (
                     <SectionContainer
                     className="SectionContainer"
@@ -38,11 +44,11 @@ export default function Section({section, index, tickets}: SectionProps){
                     >
                         <SectionHeader {...provided.dragHandleProps}>
                             <SectionName>
-                            {data[section].title}
+                            {"sdsdsdsd"}
                             </SectionName>
                         </SectionHeader>
                         <div>
-                            <Droppable droppableId={section} type="SECTION" >
+                            <Droppable droppableId={sectionId} type="SECTION" >
                                 {(provided, snapshot) => (
                                     <div style={{
                                         
@@ -67,6 +73,5 @@ export default function Section({section, index, tickets}: SectionProps){
 
 type SectionProps = {
     index: number,
-    section: any,
-    tickets: string[]
+    sectionId: string
 }

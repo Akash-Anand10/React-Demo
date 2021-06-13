@@ -15,9 +15,9 @@ const CardContent = styled.div`
 
 `
 
-const Card = ({index, id, content}: CardProps) => {
+const Card = ({index, ticketId, content}: CardProps) => {
     return (
-        <Draggable draggableId={id} index={index} key={id} >
+        <Draggable draggableId={ticketId} index={index} key={ticketId} >
             {(provided) => (
                 <CardContainer 
                 {...provided.draggableProps} 
@@ -37,6 +37,6 @@ const Card = ({index, id, content}: CardProps) => {
 type CardProps ={
     index: number,
     content: string,
-    id: string
+    ticketId: string
 }
 export default Card;

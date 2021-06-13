@@ -1,8 +1,9 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import styled from "styled-components"
 import Section from "./Section"
-import { allTickets, data } from "./models/data"
+import { data } from "./models/data"
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd"
+import { useAppSelector } from "../hooks"
 
 const SectionsContainer = styled.div`
     display: flex;
@@ -70,10 +71,12 @@ export default function Board() {
     const [secs, setSecs] = useState(Object.keys(data));
     
     const [ticketsData, setTicketsData] = useState(data);
-    
-    const Sections = secs?.map((section, index) => {
+
+    const sectionsData = useAppSelector((state) => state.sections);
+
+    const Sections_ = sectionsData.allIds?.map((sectionId, index) => {
         return(
-        <Section section = {section} index={index} key={index} tickets={ticketsData[section].tickets}/>
+            <Section sectionId={sectionId} index={index} key={sectionId}/>
         )
     })
     
@@ -89,7 +92,7 @@ export default function Board() {
                         {...provided.droppableProps} 
                         ref={provided.innerRef}
                         >
-                        {Sections}
+                        {Sections_}
                         {provided.placeholder}
                         </SectionsContainer>
                     )}
