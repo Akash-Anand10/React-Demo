@@ -25,12 +25,13 @@ const SectionName = styled.h3`
 export default function Section({sectionId, index}: SectionProps){
 
     const sectionTicketIds: string[] = useAppSelector(state => state.sections.byId[sectionId].tickets);
-    const allTickets_ = useAppSelector(state => state.tickets.byId);
-    const tickets_ = sectionTicketIds.map(ticketId => allTickets_[ticketId])
+    const allSections = useAppSelector(state => state.sections.byId)
+    const allTickets = useAppSelector(state => state.tickets.byId);
+    const sectionTickets = sectionTicketIds.map(ticketId => allTickets[ticketId])
     
-    const Cards = tickets_?.map((ticket, index) => {
+    const Cards = sectionTickets?.map((ticket, index) => {
         return(
-            <Card index={index} ticketId={ticket?.id} content={ticket?.content}/>
+            <Card ticketId={ticket.id} index={index}  content={ticket.content}/>
         )
     })
 
@@ -44,7 +45,7 @@ export default function Section({sectionId, index}: SectionProps){
                     >
                         <SectionHeader {...provided.dragHandleProps}>
                             <SectionName>
-                            {"sdsdsdsd"}
+                            {allSections[sectionId].title}
                             </SectionName>
                         </SectionHeader>
                         <div>
