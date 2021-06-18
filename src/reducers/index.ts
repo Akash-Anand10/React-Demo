@@ -5,8 +5,8 @@ import boardReducer from "./boardReducer";
 import sectionReducer from "./sectionReducer";
 
 const rootReducer = combineReducers({
-    sections: boardReducer,
-    tickets: sectionReducer
+  sections: boardReducer,
+  tickets: sectionReducer
 })
 const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 export default store;
