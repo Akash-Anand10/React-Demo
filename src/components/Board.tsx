@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Section from "./Section";
-import EditSection from "./editSection";
+import EditSection from "./addSection";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useThunkDispatch, useAppSelector } from "../hooks";
 import {

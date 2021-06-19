@@ -7,6 +7,8 @@ import {
   REMOVE_SECTION,
   ADD_TICKET,
   REMOVE_TICKET,
+  RENAME_SECTION,
+  EDIT_TICKET_TITLE
 } from "../actions/boardActions";
 import { data } from "../components/models/initData";
 
