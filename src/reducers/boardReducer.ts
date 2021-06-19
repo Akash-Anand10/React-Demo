@@ -7,7 +7,6 @@ import {
   REMOVE_SECTION,
   ADD_TICKET,
   REMOVE_TICKET,
-  addSection,
 } from "../actions/boardActions";
 import { data } from "../components/models/initData";
 
@@ -62,10 +61,9 @@ function boardReducer(state = initialData.sections, action: AnyAction) {
       } as stateType;
 
     case ADD_SECTION:
-      let act = action as ReturnType<typeof addSection>;
       const newSection = {
-        id: act.payload.sectionId,
-        title: act.payload.sectionTitle,
+        id: action.payload.sectionId,
+        title: action.payload.sectionTitle,
         tickets: [],
       };
 
@@ -73,14 +71,19 @@ function boardReducer(state = initialData.sections, action: AnyAction) {
         ...state,
         byId: {
           ...state.byId,
-          [act.payload.sectionId]: newSection,
+          [action.payload.sectionId]: newSection,
         },
-        allIds: [...state.allIds, act.payload.sectionId],
+        allIds: [...state.allIds, action.payload.sectionId],
       } as stateType;
 
     case REMOVE_SECTION:
+      const sectionIdsAfterDelete = state.allIds.filter(sectionId => sectionId !== action.payload.sectionId)
+      const sectionsAfterDelete = state.byId
+      delete sectionsAfterDelete[action.payload.sectionId];
       return {
         ...state,
+        byId: sectionsAfterDelete,
+        allIds: sectionIdsAfterDelete
       } as stateType;
 
     case ADD_TICKET:

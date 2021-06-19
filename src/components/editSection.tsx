@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useAppSelector, useThunkDispatch } from "../hooks";
+import { useThunkDispatch } from "../hooks";
 import { addSection} from "../actions/boardActions";
-import { time } from "console";
 
 const EditorContainer = styled.div`
   height: 70px;
@@ -54,6 +53,7 @@ const EditSection = ({setShowEditSection}: EditSectionProps) => {
       sectionId: Date.now().toString(),
       sectionTitle: sectionName
     }))
+    setShowEditSection(false);
   }
 
   const [sectionName, setSectionName] = useState("");

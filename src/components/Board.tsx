@@ -30,6 +30,7 @@ const AddSectionUnfocused = styled.div`
   margin-top: 6px;
   border-radius: 3px;
   display: flex;
+  padding: 5px;
 `;
 
 export default function Board() {
@@ -118,7 +119,11 @@ export default function Board() {
               ? <EditSection setShowEditSection={setShowEditSectionName}/> 
               : (
                 <AddSectionUnfocused onClick={editSectionHandler}>
-                  <p>{"+ ADD SECTION"}</p>
+                  <span style={{
+                    fontSize: 16,
+                    fontWeight: "bold",
+                    alignSelf: "center",
+                  }}>{"+ ADD SECTION"}</span>
                 </AddSectionUnfocused>
               )}
             </SectionsContainer>

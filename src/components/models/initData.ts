@@ -24,12 +24,12 @@ export const data: Data = {
     "byId": {
       "sec1": {
         "id": "sec1",
-        "title": "🍎 Done",
+        "title": "Done",
         "tickets": ["tic1", "tic2", "tic3"]
       },
       "sec2": {
         "id": "sec2",
-        "title": "😬 Do Today",
+        "title": "Do Today",
         "tickets": ["tic4", "tic5", "tic6"]
       },
       "sec3": {
@@ -39,7 +39,7 @@ export const data: Data = {
       },
       "sec4": {
         "id": "sec4",
-        "title": "😪 Later",
+        "title": "Later",
         "tickets": ["tic10"]
       }
     },
