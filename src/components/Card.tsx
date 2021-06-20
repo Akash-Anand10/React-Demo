@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
-import { useAppSelector, useThunkDispatch } from "../hooks";
+import { useThunkDispatch } from "../hooks";
 import { MouseEventHandler } from "react";
 import {removeTicketFromSection} from "../actions/boardActions"
 import {removeTicket} from "../actions/sectionActions"
