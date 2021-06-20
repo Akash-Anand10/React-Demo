@@ -6,7 +6,7 @@ import Card from "./Card";
 import { useAppSelector } from "../hooks";
 import { useEffect, useState } from "react";
 import { useThunkDispatch } from "../hooks";
-import { removeSection, addTicketToSection } from "../actions/boardActions";
+import { removeSection } from "../actions/boardActions";
 import AddTicket from "./addTicket";
 
 const SectionContainer = styled.div`
