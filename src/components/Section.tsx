@@ -3,9 +3,8 @@ import { Draggable, Droppable } from "react-beautiful-dnd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import Card from "./Card";
-import { useAppSelector } from "../hooks";
 import { useEffect, useState } from "react";
-import { useThunkDispatch } from "../hooks";
+import { useAppSelector, useThunkDispatch } from "../hooks";
 import { removeSection } from "../actions/boardActions";
 import AddTicket from "./addTicket";
 
@@ -64,6 +63,7 @@ export default function Section({ sectionId, index }: SectionProps) {
     return (
       <Card
         ticketId={ticketId}
+        sectionId={sectionId}
         index={index}
         content={allTickets[ticketId].content}
         key={ticketId}

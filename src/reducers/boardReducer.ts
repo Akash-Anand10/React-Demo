@@ -106,8 +106,18 @@ function boardReducer(
       return r;
 
     case REMOVE_TICKET_FROM_SECTION:
+      const changingSection = state.byId[action.payload.sectionId]
+      const sectionTicketsAfterRemove = state.byId[action.payload.sectionId].tickets.filter(ticketId => ticketId !== action.payload.ticketDetails.id)
+      
       return {
         ...state,
+        byId: {
+          ...state.byId,
+          [action.payload.sectionId]: {
+            ...changingSection,
+            tickets: sectionTicketsAfterRemove
+          }
+        }
       };
 
     default:

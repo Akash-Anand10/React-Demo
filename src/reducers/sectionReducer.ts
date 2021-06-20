@@ -1,11 +1,11 @@
 import { AnyAction } from "redux";
-import { ADD_TICKET } from "../actions/sectionActions";
+import { ADD_TICKET, REMOVE_TICKET } from "../actions/sectionActions";
 import { data } from "../components/models/initData";
 
 const initialData = data;
-
-function sectionReducer(state = initialData.tickets, action: AnyAction) {
-  type stateType = typeof state;
+type stateType = typeof initialData.tickets;
+function sectionReducer(state = initialData.tickets, action: AnyAction): stateType {
+  
 
   switch (action.type) {
     case ADD_TICKET:
@@ -21,6 +21,16 @@ function sectionReducer(state = initialData.tickets, action: AnyAction) {
         },
         allIds: ticketsAfterAdd
       } as stateType;
+
+      case REMOVE_TICKET:
+        const ticketIdsAfterRemove: string[] = state.allIds.filter(ticketId => ticketId !== action.payload.ticketDetails.id)
+        const ticketsAfterRemove = state.byId
+        delete ticketsAfterRemove[action.payload.ticketDetails.id]
+        return{
+          ...state,
+          allIds: ticketIdsAfterRemove,
+          byId: ticketsAfterRemove
+        }
 
     default:
       return state;

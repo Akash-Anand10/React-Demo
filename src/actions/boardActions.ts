@@ -36,7 +36,7 @@ type addOrRemoveTicketToSectionPayload = {
   sectionId: string,
   ticketDetails: {
     id: string,
-    title: string
+    title?: string
   }
 }
 
