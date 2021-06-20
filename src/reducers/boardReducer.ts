@@ -5,18 +5,18 @@ import {
   MOVE_TICKET_FROM_ONE_SECTION_TO_ANOTHER,
   ADD_SECTION,
   REMOVE_SECTION,
-  ADD_TICKET,
-  REMOVE_TICKET,
-  RENAME_SECTION,
-  EDIT_TICKET_TITLE
+  ADD_TICKET_TO_SECTION,
+  REMOVE_TICKET_FROM_SECTION
 } from "../actions/boardActions";
 import { data } from "../components/models/initData";
 
 const initialData = data;
+type stateType = typeof initialData.sections;
 
-function boardReducer(state = initialData.sections, action: AnyAction) {
-  type stateType = typeof state;
-
+function boardReducer(
+  state = initialData.sections,
+  action: AnyAction
+): stateType {
   switch (action.type) {
     case MOVE_SECTION:
       const newSections = [...state.allIds];
@@ -29,7 +29,7 @@ function boardReducer(state = initialData.sections, action: AnyAction) {
       return {
         ...state,
         allIds: newSections,
-      } as stateType;
+      };
 
     case MOVE_TICKET_WITHIN_SAME_SECTION:
       const section = { ...state.byId[action.payload.fromSectionId] };
@@ -43,7 +43,7 @@ function boardReducer(state = initialData.sections, action: AnyAction) {
           ...state.byId,
           [section.id]: section,
         },
-      } as stateType;
+      };
 
     case MOVE_TICKET_FROM_ONE_SECTION_TO_ANOTHER:
       const sourceSection = { ...state.byId[action.payload.fromSectionId] };
@@ -60,7 +60,7 @@ function boardReducer(state = initialData.sections, action: AnyAction) {
           [sourceSection.id]: sourceSection,
           [destinationSection.id]: destinationSection,
         },
-      } as stateType;
+      };
 
     case ADD_SECTION:
       const newSection = {
@@ -76,24 +76,36 @@ function boardReducer(state = initialData.sections, action: AnyAction) {
           [action.payload.sectionId]: newSection,
         },
         allIds: [...state.allIds, action.payload.sectionId],
-      } as stateType;
+      };
 
     case REMOVE_SECTION:
-      const sectionIdsAfterDelete = state.allIds.filter(sectionId => sectionId !== action.payload.sectionId)
-      const sectionsAfterDelete = state.byId
+      const sectionIdsAfterDelete = state.allIds.filter(
+        (sectionId) => sectionId !== action.payload.sectionId
+      );
+      const sectionsAfterDelete = state.byId;
       delete sectionsAfterDelete[action.payload.sectionId];
       return {
         ...state,
         byId: sectionsAfterDelete,
-        allIds: sectionIdsAfterDelete
-      } as stateType;
-
-    case ADD_TICKET:
-      return {
-        ...state,
+        allIds: sectionIdsAfterDelete,
       };
 
-    case REMOVE_TICKET:
+    case ADD_TICKET_TO_SECTION:
+      const sectionAfterAdd = { ...state.byId[action.payload.sectionId] };
+      sectionAfterAdd.tickets = [
+        ...sectionAfterAdd.tickets,
+        action.payload.ticketDetails.id as string,
+      ];
+      const r = {
+        ...state,
+        byId: {
+          ...state.byId,
+          [action.payload.sectionId]: sectionAfterAdd,
+        },
+      };
+      return r;
+
+    case REMOVE_TICKET_FROM_SECTION:
       return {
         ...state,
       };

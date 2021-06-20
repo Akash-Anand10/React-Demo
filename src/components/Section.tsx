@@ -4,9 +4,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import Card from "./Card";
 import { useAppSelector } from "../hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useThunkDispatch } from "../hooks";
-import { removeSection } from "../actions/boardActions";
+import { removeSection, addTicketToSection } from "../actions/boardActions";
+import AddTicket from "./addTicket";
 
 const SectionContainer = styled.div`
   width: 300px;
@@ -24,6 +25,7 @@ const SectionHeader = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center
 `;
 const SectionName = styled.h3`
   margin: 5px;
@@ -34,6 +36,16 @@ const SectionName = styled.h3`
   white-space: nowrap;
 `;
 
+const AddTicketUnfocused = styled.div`
+  height: 25px;
+  background-color: rgba(235, 236, 240, 0.5);
+  display: flex;
+  padding: 5px;
+  margin: 7px;
+  margin-bottom: 6px;
+  border-radius: 5px;
+`;
+
 export default function Section({ sectionId, index }: SectionProps) {
   const dispatch = useThunkDispatch();
 
@@ -42,24 +54,24 @@ export default function Section({ sectionId, index }: SectionProps) {
   );
   const allSections = useAppSelector((state) => state.sections.byId);
   const allTickets = useAppSelector((state) => state.tickets.byId);
-  const sectionTickets = sectionTicketIds?.map(
-    (ticketId) => allTickets[ticketId]
-  );
+
+  const [showAddTicketTitle, setShowAddTicketTitle] = useState(false);
 
   useEffect(() => {}, [allSections]);
+  useEffect(() => {}, [allTickets]);
 
-  const Cards = sectionTickets?.map((ticket, index) => {
+  const Cards = sectionTicketIds?.map((ticketId, index) => {
     return (
       <Card
-        ticketId={ticket.id}
+        ticketId={ticketId}
         index={index}
-        content={ticket.content}
-        key={ticket.id}
+        content={allTickets[ticketId].content}
+        key={ticketId}
       />
     );
   });
 
-  const onDeleteHandler = () => {
+  const onDeleteSectionHandler = () => {
     console.log("deleted section");
     dispatch(
       removeSection({
@@ -68,10 +80,15 @@ export default function Section({ sectionId, index }: SectionProps) {
     );
   };
 
+  const onAddTicketUnFocusedHandler = () => {
+    console.log("Add ticket focused");
+    setShowAddTicketTitle(true);
+  };
+
   const DeleteSectionIcon = () => {
     return (
       <div
-        onClick={onDeleteHandler}
+        onClick={onDeleteSectionHandler}
         style={{
           cursor: "pointer",
         }}
@@ -101,6 +118,20 @@ export default function Section({ sectionId, index }: SectionProps) {
               >
                 {Cards}
                 {provided.placeholder}
+                {showAddTicketTitle 
+                ?  <AddTicket sectionId={sectionId} setShowAddTicket={setShowAddTicketTitle} />
+                : (
+                  <AddTicketUnfocused onClick={onAddTicketUnFocusedHandler}>
+                    <span
+                      style={{
+                        fontSize: 14,
+                        alignSelf: "center",
+                      }}
+                    >
+                      {"+ Add another card..."}
+                    </span>
+                  </AddTicketUnfocused>
+                )}
               </div>
             )}
           </Droppable>

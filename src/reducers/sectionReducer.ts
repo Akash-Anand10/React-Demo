@@ -1,22 +1,26 @@
-import { MOVE_TICKET_WITHIN_SAME_SECTION, MOVE_TICKET_FROM_ONE_SECTION_TO_ANOTHER, moveTicketWithinSameSection } from "../actions/sectionActions";
+import { AnyAction } from "redux";
+import { ADD_TICKET } from "../actions/sectionActions";
 import { data } from "../components/models/initData";
 
 const initialData = data;
 
-function sectionReducer(state = initialData.tickets, action: ReturnType<typeof moveTicketWithinSameSection>) {
-  switch (action.type) {
-    case MOVE_TICKET_WITHIN_SAME_SECTION:
-      // const newTickets = [...state[action.payload.fromSection]];
-      // newSections.splice(action.payload.from, 1)
-      // newSections.splice(action.payload.to, 0, state.allIds[action.payload.from]);
-      return {
-        ...state,
+function sectionReducer(state = initialData.tickets, action: AnyAction) {
+  type stateType = typeof state;
 
-      }
-    case MOVE_TICKET_FROM_ONE_SECTION_TO_ANOTHER:
+  switch (action.type) {
+    case ADD_TICKET:
+      const ticketsAfterAdd: string[] = [...state.allIds, action.payload.ticketDetails.id]
       return {
         ...state,
-      }
+        byId: {
+          ...state.byId,
+          [action.payload.ticketDetails.id]: {
+            id: action.payload.ticketDetails.id,
+            content: action.payload.ticketDetails.title
+          }
+        },
+        allIds: ticketsAfterAdd
+      } as stateType;
 
     default:
       return state;

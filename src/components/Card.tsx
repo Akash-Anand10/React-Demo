@@ -2,10 +2,10 @@ import styled from "styled-components"
 import { Draggable } from "react-beautiful-dnd"
 
 const CardContainer = styled.div`
-    height: 100px;
+    height: 70px;
     max-height: 100px;
     background-color: white;
-    padding: 2px;
+    padding: 7px;
     margin: 7px;
     margin-bottom: 6px;
     border-radius: 5px;

@@ -6,7 +6,7 @@ import { useThunkDispatch, useAppSelector } from "../hooks";
 import {
   moveTicketWithinSameSection,
   moveTicketFromOneSectionToAnother,
-} from "../actions/sectionActions";
+} from "../actions/boardActions";
 import { moveSection } from "../actions/boardActions";
 import { useEffect, useState } from "react";
 

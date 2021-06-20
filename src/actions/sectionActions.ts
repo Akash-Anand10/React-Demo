@@ -1,23 +1,16 @@
-export const MOVE_TICKET_WITHIN_SAME_SECTION = "boardActions/MOVE_TICKET_WITHIN_SAME_SECTION";
-export const MOVE_TICKET_FROM_ONE_SECTION_TO_ANOTHER = "boardActions/MOVE_TICKET_FROM_ONE_SECTION_TO_ANOTHER";
+export const ADD_TICKET = "sectionActions/ADD_TICKET";
 
-export type moveTicketPayload = {
-  fromIndex: number,
-  toIndex: number,
-  fromSectionId: string,
-  toSectionId: string
-}
-
-export const moveTicketWithinSameSection = (payload: moveTicketPayload) => {
-  return {
-    type: MOVE_TICKET_WITHIN_SAME_SECTION,
-    payload
+type addOrRemoveTicketPayload = {
+  sectionId: string,
+  ticketDetails: {
+    id: string,
+    title: string
   }
 }
 
-export const moveTicketFromOneSectionToAnother = (payload: moveTicketPayload) => {
+export const addTicket = (payload: addOrRemoveTicketPayload) => {
   return {
-    type: MOVE_TICKET_FROM_ONE_SECTION_TO_ANOTHER,
+    type: ADD_TICKET,
     payload
   }
 }

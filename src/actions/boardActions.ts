@@ -6,8 +6,8 @@ export const RENAME_SECTION = "boardActions/RENAME_SECTION";
 
 export const MOVE_TICKET_WITHIN_SAME_SECTION = "boardActions/MOVE_TICKET_WITHIN_SAME_SECTION";
 export const MOVE_TICKET_FROM_ONE_SECTION_TO_ANOTHER = "boardActions/MOVE_TICKET_FROM_ONE_SECTION_TO_ANOTHER";
-export const ADD_TICKET = "boardActions/ADD_TICKET";
-export const REMOVE_TICKET = "boardActions/REMOVE_TICKET";
+export const ADD_TICKET_TO_SECTION = "boardActions/ADD_TICKET";
+export const REMOVE_TICKET_FROM_SECTION = "boardActions/REMOVE_TICKET";
 export const EDIT_TICKET_TITLE = "boardActions/EDIT_TICKET_TITLE";
 
 
@@ -36,20 +36,20 @@ type addOrRemoveTicketToSectionPayload = {
   sectionId: string,
   ticketDetails: {
     id: string,
-    content: string
+    title: string
   }
 }
 
 export const addTicketToSection = (payload: addOrRemoveTicketToSectionPayload) => {
   return {
-    type: ADD_TICKET,
+    type: ADD_TICKET_TO_SECTION,
     payload
   }
 }
 
 export const removeTicketFromSection = (payload: addOrRemoveTicketToSectionPayload) => {
   return {
-    type: REMOVE_TICKET,
+    type: REMOVE_TICKET_FROM_SECTION,
     payload
   }
 }
