@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useThunkDispatch } from "../hooks";
 import { addSection} from "../actions/boardActions";
+import { useDispatch } from "react-redux";
 
 const EditorContainer = styled.div`
   height: 70px;
@@ -40,7 +40,7 @@ const EditorClose = styled.div`
 `;
 
 const EditSection = ({setShowEditSection}: EditSectionProps) => {
-  const dispatch = useThunkDispatch();
+  const dispatch = useDispatch();
   
   const onCloseHandler = () => {
     setShowEditSection(false);

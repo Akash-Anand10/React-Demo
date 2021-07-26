@@ -1,14 +1,16 @@
 import styled from "styled-components";
+import Loader from "react-loader";
 import Section from "./Section";
 import EditSection from "./addSection";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
-import { useThunkDispatch, useAppSelector } from "../hooks";
+import { useAppSelector } from "../hooks";
 import {
   moveTicketWithinSameSection,
   moveTicketFromOneSectionToAnother,
 } from "../actions/boardActions";
-import { moveSection } from "../actions/boardActions";
+import { loadInitalData, moveSection } from "../actions/boardActions";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const SectionsContainer = styled.div`
   display: flex;
@@ -34,7 +36,18 @@ const AddSectionUnfocused = styled.div`
 `;
 
 export default function Board() {
-  const dispatch = useThunkDispatch();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(loadInitalData(setDataLoaded));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const allData = useAppSelector((state) => state);
+
+  useEffect(() => {
+    console.log("all data", allData);
+  }, [allData]);
 
   const onDragEnd = (result: DropResult) => {
     if (result.type === "BOARD") {
@@ -48,6 +61,7 @@ export default function Board() {
         moveSection({
           from: result.source.index,
           to: result.destination?.index,
+          sectionId: result.draggableId
         })
       );
     }
@@ -56,6 +70,7 @@ export default function Board() {
       if (result.destination?.droppableId === result.source.droppableId) {
         dispatch(
           moveTicketWithinSameSection({
+            ticketId: result.draggableId,
             fromIndex: result.source.index,
             toIndex: result.destination.index,
             fromSectionId: result.source.droppableId,
@@ -69,6 +84,7 @@ export default function Board() {
         } else {
           dispatch(
             moveTicketFromOneSectionToAnother({
+              ticketId: result.draggableId,
               fromIndex: result.source.index,
               toIndex: result.destination.index,
               fromSectionId: result.source.droppableId,
@@ -82,7 +98,8 @@ export default function Board() {
   };
 
   // Intialising the states here:
-  const sectionsData = useAppSelector((state) => state.sections);
+  const sectionsData = useAppSelector((state) => state.board.sections);
+  const [dataLoaded, setDataLoaded] = useState(true);
   const [showEditSectionName, setShowEditSectionName] = useState(false);
 
   const editSectionHandler = () => {
@@ -90,15 +107,17 @@ export default function Board() {
     setShowEditSectionName(true);
   };
 
-  const Sections = sectionsData.allIds?.map((sectionId, index) => {
+  useEffect(() => {
+    console.log(`all data when loaded is ${dataLoaded}`, allData);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataLoaded]);
+
+
+  const Sections = sectionsData.allIds?.map((sectionId: string, index: number) => {
     return <Section sectionId={sectionId} index={index} key={sectionId} />;
   });
 
-  useEffect(()=>{
-    console.log(sectionsData)
-  }, [sectionsData]);
-  
-  return (
+  return dataLoaded ? (
     <>
       <SectionHeader className="board-header" />
 
@@ -115,15 +134,19 @@ export default function Board() {
             >
               {Sections}
               {provided.placeholder}
-              {showEditSectionName 
-              ? <EditSection setShowEditSection={setShowEditSectionName}/> 
-              : (
+              {showEditSectionName ? (
+                <EditSection setShowEditSection={setShowEditSectionName} />
+              ) : (
                 <AddSectionUnfocused onClick={editSectionHandler}>
-                  <span style={{
-                    fontSize: 16,
-                    fontWeight: "bold",
-                    alignSelf: "center",
-                  }}>{"+ ADD SECTION"}</span>
+                  <span
+                    style={{
+                      fontSize: 16,
+                      fontWeight: "bold",
+                      alignSelf: "center",
+                    }}
+                  >
+                    {"+ ADD SECTION"}
+                  </span>
                 </AddSectionUnfocused>
               )}
             </SectionsContainer>
@@ -131,5 +154,7 @@ export default function Board() {
         </Droppable>
       </DragDropContext>
     </>
+  ) : (
+    <Loader loaded={dataLoaded} color="black" radius={30} />
   );
 }

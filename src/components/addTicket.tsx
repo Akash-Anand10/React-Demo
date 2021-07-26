@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useThunkDispatch } from "../hooks";
 import { addTicketToSection } from "../actions/boardActions";
-import { addTicket } from "../actions/sectionActions"
 
 const EditorContainer = styled.div`
   height: 70px;
@@ -50,15 +49,6 @@ const AddTicket = ({ sectionId, setShowAddTicket }: EditSectionProps) => {
   const onSaveHandler = () => {
     let id = Date.now().toString()
     console.log("saved", ticketTitle);
-    dispatch(
-      addTicket({
-        sectionId: sectionId,
-        ticketDetails: {
-          id: id,
-          title: ticketTitle,
-        },
-      })
-    );
     dispatch(
       addTicketToSection({
         sectionId: sectionId,

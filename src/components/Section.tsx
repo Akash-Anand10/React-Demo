@@ -3,15 +3,17 @@ import { Draggable, Droppable } from "react-beautiful-dnd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import Card from "./Card";
-import { useEffect, useState } from "react";
-import { useAppSelector, useThunkDispatch } from "../hooks";
-import { removeSection } from "../actions/boardActions";
+import { useState } from "react";
+import { useAppSelector } from "../hooks";
+import { removeSection, renameSection } from "../actions/boardActions";
 import AddTicket from "./addTicket";
+import { useDispatch } from "react-redux";
 
 const SectionContainer = styled.div`
   width: 300px;
   min-width: 300px;
-  background-color: rgba(235, 236, 240, 0.5);
+  /* background-color: rgba(235, 236, 240, 0.5); */
+  background-color: transparent;
   margin-left: 6px;
   margin-top: 6px;
   border-radius: 3px;
@@ -24,7 +26,7 @@ const SectionHeader = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  text-align: center
+  text-align: center;
 `;
 const SectionName = styled.h3`
   margin: 5px;
@@ -46,18 +48,15 @@ const AddTicketUnfocused = styled.div`
 `;
 
 export default function Section({ sectionId, index }: SectionProps) {
-  const dispatch = useThunkDispatch();
+  const dispatch = useDispatch();
 
   const sectionTicketIds: string[] = useAppSelector(
-    (state) => state.sections.byId[sectionId]?.tickets
+    (state) => state.board.sections?.byId[sectionId]?.tickets
   );
-  const allSections = useAppSelector((state) => state.sections.byId);
-  const allTickets = useAppSelector((state) => state.tickets.byId);
+  const allSections = useAppSelector((state) => state.board.sections.byId);
+  const allTickets = useAppSelector((state) => state.board.tickets.byId);
 
   const [showAddTicketTitle, setShowAddTicketTitle] = useState(false);
-
-  useEffect(() => {}, [allSections]);
-  useEffect(() => {}, [allTickets]);
 
   const Cards = sectionTicketIds?.map((ticketId, index) => {
     return (
@@ -85,6 +84,11 @@ export default function Section({ sectionId, index }: SectionProps) {
     setShowAddTicketTitle(true);
   };
 
+  const sectionRenamehandler = () => {
+    console.log("section rename handler");
+    dispatch(renameSection({ sectionId: "1", sectionTitle: "" }));
+  };
+
   const DeleteSectionIcon = () => {
     return (
       <div
@@ -106,7 +110,9 @@ export default function Section({ sectionId, index }: SectionProps) {
           ref={provided.innerRef}
         >
           <SectionHeader {...provided.dragHandleProps}>
-            <SectionName>{allSections[sectionId]?.title}</SectionName>
+            <SectionName onClick={sectionRenamehandler}>
+              {allSections[sectionId]?.title}
+            </SectionName>
             <DeleteSectionIcon />
           </SectionHeader>
           <Droppable droppableId={sectionId} type="SECTION">
@@ -118,9 +124,12 @@ export default function Section({ sectionId, index }: SectionProps) {
               >
                 {Cards}
                 {provided.placeholder}
-                {showAddTicketTitle 
-                ?  <AddTicket sectionId={sectionId} setShowAddTicket={setShowAddTicketTitle} />
-                : (
+                {showAddTicketTitle ? (
+                  <AddTicket
+                    sectionId={sectionId}
+                    setShowAddTicket={setShowAddTicketTitle}
+                  />
+                ) : (
                   <AddTicketUnfocused onClick={onAddTicketUnFocusedHandler}>
                     <span
                       style={{

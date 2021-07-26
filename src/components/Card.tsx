@@ -5,8 +5,6 @@ import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
 import { useThunkDispatch } from "../hooks";
 import { MouseEventHandler } from "react";
 import {removeTicketFromSection} from "../actions/boardActions"
-import {removeTicket} from "../actions/sectionActions"
-
 
 const CardContainer = styled.div`
   height: 70px;
@@ -54,12 +52,6 @@ const Card = ({ index, ticketId, content, sectionId }: CardProps) => {
   const onDeleteHandler = () => {
     console.log("deleted", ticketId);
     dispatch(removeTicketFromSection({
-      sectionId: sectionId,
-      ticketDetails: {
-        id: ticketId
-      }
-    }));
-    dispatch(removeTicket({
       sectionId: sectionId,
       ticketDetails: {
         id: ticketId

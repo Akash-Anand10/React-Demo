@@ -1,14 +1,19 @@
 // In this reducer will combine all rducers
 import { applyMiddleware, combineReducers, createStore } from "redux";
-import thunkMiddleware from 'redux-thunk';
-import boardReducer from "./boardReducer";
-import sectionReducer from "./sectionReducer";
+import thunk from 'redux-thunk';
+import board from "./boardReducer";
 
 const rootReducer = combineReducers({
-  sections: boardReducer,
-  tickets: sectionReducer
+  board: board
 })
-const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
+
+const stateLogger = () => (next: (arg0: any) => void) => (action: any) => {
+  console.log(action, "logger");
+  next(action);
+};
+
+const middlewares = [thunk, stateLogger]
+const store = createStore(rootReducer, applyMiddleware(...middlewares));
 export default store;
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

@@ -1,128 +1,111 @@
-import { AnyAction } from "redux";
 import {
+  FETCH_INITIAL_DATA,
   MOVE_SECTION,
   MOVE_TICKET_WITHIN_SAME_SECTION,
   MOVE_TICKET_FROM_ONE_SECTION_TO_ANOTHER,
   ADD_SECTION,
   REMOVE_SECTION,
   ADD_TICKET_TO_SECTION,
-  REMOVE_TICKET_FROM_SECTION
+  REMOVE_TICKET_FROM_SECTION,
+  RENAME_SECTION,
 } from "../actions/boardActions";
-import { data } from "../components/models/initData";
+import { Data } from "../models/initData";
+import produce from "immer";
 
-const initialData = data;
-type stateType = typeof initialData.sections;
+let initialData: Data = {
+  sections: {
+    byId: {},
+    allIds: [],
+  },
+  tickets: {
+    byId: {},
+    allIds: [],
+  },
+};
+type stateType = typeof initialData;
 
-function boardReducer(
-  state = initialData.sections,
-  action: AnyAction
-): stateType {
+const board = produce((draft: stateType, action) => {
   switch (action.type) {
+    case FETCH_INITIAL_DATA:
+      draft.sections = action.payload.sections;
+      draft.tickets = action.payload.tickets;
+      console.log("draft", draft)
+      break;
+
     case MOVE_SECTION:
-      const newSections = [...state.allIds];
-      newSections.splice(action.payload.from, 1);
-      newSections.splice(
+      draft.sections.allIds.splice(action.payload.from, 1);
+      draft.sections.allIds.splice(
         action.payload.to,
         0,
-        state.allIds[action.payload.from]
+        action.payload.sectionId
       );
-      return {
-        ...state,
-        allIds: newSections,
-      };
+      break;
 
     case MOVE_TICKET_WITHIN_SAME_SECTION:
-      const section = { ...state.byId[action.payload.fromSectionId] };
-      const sectionTickets = section.tickets;
-      const ticketToMove = sectionTickets[action.payload.fromIndex];
-      sectionTickets.splice(action.payload.fromIndex, 1);
-      sectionTickets.splice(action.payload.toIndex, 0, ticketToMove);
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [section.id]: section,
-        },
-      };
+      draft.sections.byId[action.payload.fromSectionId].tickets.splice(
+        action.payload.fromIndex,
+        1
+      );
+      draft.sections.byId[action.payload.fromSectionId].tickets.splice(
+        action.payload.fromIndex,
+        0,
+        action.payload.ticketId
+      );
+      break;
 
     case MOVE_TICKET_FROM_ONE_SECTION_TO_ANOTHER:
-      const sourceSection = { ...state.byId[action.payload.fromSectionId] };
-      const destinationSection = { ...state.byId[action.payload.toSectionId] };
-      const sourceTickets = sourceSection.tickets;
-      const destinationTickets = destinationSection.tickets;
-      const ticketToMove2 = sourceTickets[action.payload.fromIndex];
-      sourceTickets.splice(action.payload.fromIndex, 1);
-      destinationTickets.splice(action.payload.toIndex, 0, ticketToMove2);
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [sourceSection.id]: sourceSection,
-          [destinationSection.id]: destinationSection,
-        },
-      };
+      draft.sections.byId[action.payload.fromSectionId].tickets.splice(
+        action.payload.fromIndex,
+        1
+      );
+      draft.sections.byId[action.payload.toSectionId].tickets.splice(
+        action.payload.toIndex,
+        0,
+        action.payload.ticketId
+      );
+      break;
 
     case ADD_SECTION:
-      const newSection = {
+      draft.sections.byId[action.payload.sectionId] = {
         id: action.payload.sectionId,
         title: action.payload.sectionTitle,
         tickets: [],
       };
-
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.sectionId]: newSection,
-        },
-        allIds: [...state.allIds, action.payload.sectionId],
-      };
+      draft.sections.allIds.push(action.payload.sectionId);
+      break;
 
     case REMOVE_SECTION:
-      const sectionIdsAfterDelete = state.allIds.filter(
+      draft.sections.allIds = draft.sections.allIds.filter(
         (sectionId) => sectionId !== action.payload.sectionId
       );
-      const sectionsAfterDelete = state.byId;
-      delete sectionsAfterDelete[action.payload.sectionId];
-      return {
-        ...state,
-        byId: sectionsAfterDelete,
-        allIds: sectionIdsAfterDelete,
-      };
+      delete draft.sections.byId[action.payload.sectionId];
+      break;
 
     case ADD_TICKET_TO_SECTION:
-      const sectionAfterAdd = { ...state.byId[action.payload.sectionId] };
-      sectionAfterAdd.tickets = [
-        ...sectionAfterAdd.tickets,
-        action.payload.ticketDetails.id as string,
-      ];
-      const r = {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.sectionId]: sectionAfterAdd,
-        },
+      draft.sections.byId[action.payload.sectionId].tickets.push(
+        action.payload.ticketDetails.id
+      );
+      draft.tickets.allIds.push(action.payload.ticketDetails.id);
+      draft.tickets.byId[action.payload.ticketDetails.id] = {
+        id: action.payload.ticketDetails.id,
+        content: action.payload.ticketDetails?.title,
       };
-      return r;
+      break;
 
     case REMOVE_TICKET_FROM_SECTION:
-      const changingSection = state.byId[action.payload.sectionId]
-      const sectionTicketsAfterRemove = state.byId[action.payload.sectionId].tickets.filter(ticketId => ticketId !== action.payload.ticketDetails.id)
-      
-      return {
-        ...state,
-        byId: {
-          ...state.byId,
-          [action.payload.sectionId]: {
-            ...changingSection,
-            tickets: sectionTicketsAfterRemove
-          }
-        }
-      };
+      draft.sections.byId[action.payload.sectionId].tickets =
+        draft.sections.byId[action.payload.sectionId].tickets.filter(
+          (ticketId) => ticketId !== action.payload.ticketDetails.id
+        );
+      delete draft.tickets.byId[action.payload.ticketDetails.id];
+      draft.tickets.allIds = draft.tickets.allIds.filter(
+        (ticketId) => ticketId !== action.payload.ticketDetails.id
+      );
+      break;
 
-    default:
-      return state;
+    case RENAME_SECTION:
+      break;
   }
-}
+}, initialData);
 
-export default boardReducer;
+export default board;
