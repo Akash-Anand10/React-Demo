@@ -11,9 +11,7 @@ function App() {
           <KBoard />
         </Route>
         
-        <Route path="/task/:id">
-          <TaskScreen/>
-        </Route>
+        <Route path="/task/:id" children={<TaskScreen/>}/>
       </Switch>
     </div>
   );

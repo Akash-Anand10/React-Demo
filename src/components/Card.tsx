@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
 import { Draggable } from "react-beautiful-dnd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
@@ -49,6 +50,13 @@ const Card = ({ index, ticketId, content, sectionId }: CardProps) => {
   
   const dispatch = useThunkDispatch();
 
+  const history = useHistory();
+
+  function onEditHandler() {
+    console.log("selected ticket id: ", ticketId);
+    history.push(`/task/${ticketId}`);
+  }
+
   const onDeleteHandler = () => {
     console.log("deleted", ticketId);
     dispatch(removeTicketFromSection({
@@ -68,7 +76,7 @@ const Card = ({ index, ticketId, content, sectionId }: CardProps) => {
           ref={provided.innerRef}
         >
           <CardMenu>
-            <Menu onDeleteHandler={onDeleteHandler}/>
+            <Menu onDeleteHandler={onEditHandler}/>
           </CardMenu>
           <CardContent>{content}</CardContent>
         </CardContainer>
