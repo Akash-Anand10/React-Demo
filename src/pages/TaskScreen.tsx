@@ -1,6 +1,4 @@
-import { type } from "os";
 import { useParams } from "react-router-dom";
-
 
 export default function TaskScreen() {
   type Params = {

@@ -3,9 +3,8 @@ import { useHistory } from "react-router-dom";
 import { Draggable } from "react-beautiful-dnd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
-import { useThunkDispatch } from "../hooks";
 import { MouseEventHandler } from "react";
-import {removeTicketFromSection} from "../actions/boardActions"
+// import {removeTicketFromSection} from "../actions/boardActions"
 
 const CardContainer = styled.div`
   height: 70px;
@@ -48,8 +47,6 @@ const Menu = ({onDeleteHandler}: menuProps) => {
 
 const Card = ({ index, ticketId, content, sectionId }: CardProps) => {
   
-  const dispatch = useThunkDispatch();
-
   const history = useHistory();
 
   function onEditHandler() {
@@ -57,15 +54,15 @@ const Card = ({ index, ticketId, content, sectionId }: CardProps) => {
     history.push(`/task/${ticketId}`);
   }
 
-  const onDeleteHandler = () => {
-    console.log("deleted", ticketId);
-    dispatch(removeTicketFromSection({
-      sectionId: sectionId,
-      ticketDetails: {
-        id: ticketId
-      }
-    }));
-  }
+  // const onDeleteHandler = () => {
+  //   console.log("deleted", ticketId);
+  //   dispatch(removeTicketFromSection({
+  //     sectionId: sectionId,
+  //     ticketDetails: {
+  //       id: ticketId
+  //     }
+  //   }));
+  // }
 
   return (
     <Draggable draggableId={ticketId} index={index} key={ticketId}>
