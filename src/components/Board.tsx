@@ -26,13 +26,14 @@ const SectionHeader = styled.div`
 const AddSectionUnfocused = styled.div`
   width: 300px;
   min-width: 300px;
-  height: 45px;
+  height: 28px;
   background-color: rgba(235, 236, 240, 0.5);
   margin-left: 6px;
   margin-top: 6px;
   border-radius: 3px;
   display: flex;
   padding: 5px;
+  justify-content: center;
 `;
 
 export default function Board() {
@@ -145,7 +146,7 @@ export default function Board() {
                       alignSelf: "center",
                     }}
                   >
-                    {"+ ADD SECTION"}
+                    + ADD SECTION
                   </span>
                 </AddSectionUnfocused>
               )}
