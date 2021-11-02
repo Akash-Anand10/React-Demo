@@ -2,17 +2,22 @@ import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { Draggable } from "react-beautiful-dnd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
+import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { MouseEventHandler } from "react";
-// import {removeTicketFromSection} from "../actions/boardActions"
+import { removeTicketFromSection } from "../actions/boardActions";
+import { useDispatch } from "react-redux";
 
 const CardContainer = styled.div`
   height: 70px;
+  min-height: 100px;
   max-height: 100px;
   background-color: white;
   margin: 7px;
   margin-bottom: 6px;
   border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 `;
 
 const CardContent = styled.div`
@@ -21,48 +26,51 @@ const CardContent = styled.div`
 
 const CardMenu = styled.div`
   background-color: rgba(197, 221, 191, 0.7);
-  height: 15px;
+  height: 24px;
   padding-right: 7px;
   display: flex;
   align-items: center;
-  justify-content: flex-end
+  justify-content: flex-end;
 `;
 
 type menuProps = {
-  onDeleteHandler: MouseEventHandler<HTMLDivElement>
-}
-const Menu = ({onDeleteHandler}: menuProps) => {
-  return(
-    <div style={{
-      height: "15px",
-      width: "15px",
-      cursor: "pointer"
-    }}
-    onClick={onDeleteHandler}
+  onDeleteHandler: MouseEventHandler<HTMLDivElement>;
+};
+
+// This is the Ellipses menu on top of the Task card. Currently we are using it on;y to delete.
+const Menu = ({ onDeleteHandler }: menuProps) => {
+  return (
+    <div
+      style={{
+        cursor: "pointer",
+      }}
+      onClick={onDeleteHandler}
     >
-      <FontAwesomeIcon icon={faEllipsisH} size="sm"/>
+      <FontAwesomeIcon icon={faTimesCircle} size="sm" />
     </div>
-  )
-}
+  );
+};
 
 const Card = ({ index, ticketId, content, sectionId }: CardProps) => {
-  
   const history = useHistory();
+  const dispatch = useDispatch();
 
   function onEditHandler() {
     console.log("selected ticket id: ", ticketId);
     history.push(`/task/${ticketId}`);
   }
 
-  // const onDeleteHandler = () => {
-  //   console.log("deleted", ticketId);
-  //   dispatch(removeTicketFromSection({
-  //     sectionId: sectionId,
-  //     ticketDetails: {
-  //       id: ticketId
-  //     }
-  //   }));
-  // }
+  const onDeleteHandler = () => {
+    console.log("deleted", ticketId);
+    dispatch(
+      removeTicketFromSection({
+        sectionId: sectionId,
+        ticketDetails: {
+          id: ticketId,
+        },
+      })
+    );
+  };
 
   return (
     <Draggable draggableId={ticketId} index={index} key={ticketId}>
@@ -73,9 +81,11 @@ const Card = ({ index, ticketId, content, sectionId }: CardProps) => {
           ref={provided.innerRef}
         >
           <CardMenu>
-            <Menu onDeleteHandler={onEditHandler}/>
+            <Menu onDeleteHandler={onDeleteHandler} />
           </CardMenu>
-          <CardContent>{content}</CardContent>
+          <div style={{height: '100%'}} onClick={onEditHandler}>
+            <CardContent>{content}</CardContent>
+          </div>
         </CardContainer>
       )}
     </Draggable>

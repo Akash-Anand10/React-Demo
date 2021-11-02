@@ -8,6 +8,8 @@ import {
   ADD_TICKET_TO_SECTION,
   REMOVE_TICKET_FROM_SECTION,
   RENAME_SECTION,
+  EDIT_TICKET_TITLE,
+  SET_IS_DATA_LOADED
 } from "../actions/boardActions";
 import { Data } from "../models/initData";
 import produce from "immer";
@@ -21,6 +23,7 @@ let initialData: Data = {
     byId: {},
     allIds: [],
   },
+  isDataLoaded: false
 };
 type stateType = typeof initialData;
 
@@ -104,6 +107,16 @@ const board = produce((draft: stateType, action) => {
       break;
 
     case RENAME_SECTION:
+      break;
+    
+    case EDIT_TICKET_TITLE:
+      if (action.payload.title !== undefined) {
+        draft.tickets.byId[action.payload.id].content = action.payload.title;
+      }
+      break;
+
+    case SET_IS_DATA_LOADED:
+      draft.isDataLoaded = action.payload.isDataLoaded
       break;
   }
 }, initialData);
