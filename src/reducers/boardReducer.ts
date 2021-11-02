@@ -50,7 +50,7 @@ const board = produce((draft: stateType, action) => {
         1
       );
       draft.sections.byId[action.payload.fromSectionId].tickets.splice(
-        action.payload.fromIndex,
+        action.payload.toIndex,
         0,
         action.payload.ticketId
       );
