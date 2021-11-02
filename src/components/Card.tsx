@@ -6,7 +6,6 @@ import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { MouseEventHandler } from "react";
 import { removeTicketFromSection } from "../actions/boardActions";
 import { useDispatch } from "react-redux";
-// import {removeTicketFromSection} from "../actions/boardActions"
 
 const CardContainer = styled.div`
   height: 70px;
