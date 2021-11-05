@@ -26,28 +26,26 @@ const SectionHeader = styled.div`
 const AddSectionUnfocused = styled.div`
   width: 300px;
   min-width: 300px;
-  height: 45px;
+  height: 28px;
   background-color: rgba(235, 236, 240, 0.5);
   margin-left: 6px;
   margin-top: 6px;
   border-radius: 3px;
   display: flex;
   padding: 5px;
+  justify-content: center;
 `;
 
 export default function Board() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(loadInitalData(setDataLoaded));
+    if (!isDataLoaded) {
+      dispatch(loadInitalData());
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const allData = useAppSelector((state) => state);
-
-  useEffect(() => {
-    console.log("all data", allData);
-  }, [allData]);
 
   const onDragEnd = (result: DropResult) => {
     if (result.type === "BOARD") {
@@ -61,7 +59,7 @@ export default function Board() {
         moveSection({
           from: result.source.index,
           to: result.destination?.index,
-          sectionId: result.draggableId
+          sectionId: result.draggableId,
         })
       );
     }
@@ -99,7 +97,7 @@ export default function Board() {
 
   // Intialising the states here:
   const sectionsData = useAppSelector((state) => state.board.sections);
-  const [dataLoaded, setDataLoaded] = useState(true);
+  const isDataLoaded = useAppSelector((state) => state.board.isDataLoaded);
   const [showEditSectionName, setShowEditSectionName] = useState(false);
 
   const editSectionHandler = () => {
@@ -108,19 +106,19 @@ export default function Board() {
   };
 
   useEffect(() => {
-    console.log(`all data when loaded is ${dataLoaded}`, allData);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataLoaded]);
+    console.log(`isDataLoaded changed to ${isDataLoaded}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDataLoaded]);
 
+  const Sections = sectionsData.allIds?.map(
+    (sectionId: string, index: number) => {
+      return <Section sectionId={sectionId} index={index} key={sectionId} />;
+    }
+  );
 
-  const Sections = sectionsData.allIds?.map((sectionId: string, index: number) => {
-    return <Section sectionId={sectionId} index={index} key={sectionId} />;
-  });
-
-  return dataLoaded ? (
+  return isDataLoaded ? (
     <>
       <SectionHeader className="board-header" />
-
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable
           droppableId="parent_dropable_board"
@@ -145,7 +143,7 @@ export default function Board() {
                       alignSelf: "center",
                     }}
                   >
-                    {"+ ADD SECTION"}
+                    + ADD SECTION
                   </span>
                 </AddSectionUnfocused>
               )}
@@ -155,6 +153,6 @@ export default function Board() {
       </DragDropContext>
     </>
   ) : (
-    <Loader loaded={dataLoaded} color="black" radius={30} />
+      <Loader loaded={isDataLoaded} color="black" radius={30} zIndex={100}/>
   );
 }
