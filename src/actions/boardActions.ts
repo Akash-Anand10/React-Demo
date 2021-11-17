@@ -15,6 +15,7 @@ export const ADD_TICKET_TO_SECTION = "boardActions/ADD_TICKET";
 export const REMOVE_TICKET_FROM_SECTION = "boardActions/REMOVE_TICKET";
 export const EDIT_TICKET_TITLE = "boardActions/EDIT_TICKET_TITLE";
 export const SET_IS_DATA_LOADED = "boardActions/SET_IS_DATA_LOADED";
+export const SET_MODAL_DETAILS = "boardActions/SET_MODAL_DETAILS";
 
 export const loadInitalData =
   () => async (dispatch: Dispatch<any>, getState: any) => {
@@ -28,29 +29,17 @@ export const loadInitalData =
       type: FETCH_INITIAL_DATA,
       payload: data,
     });
-    return dispatch(setIsDataLoaded({
-      isDataLoaded: true
-    }))
+    return dispatch(
+      setIsDataLoaded({
+        isDataLoaded: true,
+      })
+    );
     // return dispatch({
     //   type: SET_IS_DATA_LOADED,
     //   payload: {
     //     isDataLoaded: true
     //   },
     // })
-  };
-
-export const loadInitalData_iife =
-  () => async (dispatch: Dispatch<any>, getState: any) => {
-    const data = await (
-      await fetch(
-        `https://run.mocky.io/v3/6a02e464-e993-4523-9ced-2445a693ed6f`
-      )
-    ).json();
-    console.log("data from api", data);
-    return dispatch({
-      type: FETCH_INITIAL_DATA,
-      payload: data,
-    });
   };
 
 export type moveTicketPayload = {
@@ -79,7 +68,7 @@ export const moveTicketFromOneSectionToAnother = (
 
 type addOrRemoveTicketToSectionPayload = {
   sectionId: string;
-  ticketDetails: {
+  ticketDetails?: {
     id: string;
     title?: string;
   };
@@ -174,6 +163,26 @@ type setIsDataLoadedPayload = {
 export const setIsDataLoaded = (payload: setIsDataLoadedPayload) => {
   return {
     type: SET_IS_DATA_LOADED,
+    payload: payload,
+  };
+};
+
+type modalDetailsTaskPayload = {
+  isModalOpen: boolean;
+  modalType: "DELETE_TASK" | "DELETE_SECTION" | "";
+  modalProps: {
+    modalText: string;
+    sectionId: string;
+    ticketDetails?: {
+      id: string;
+      title?: string;
+    };
+  };
+};
+
+export const setModalDetails = (payload: modalDetailsTaskPayload) => {
+  return {
+    type: SET_MODAL_DETAILS,
     payload: payload,
   };
 };

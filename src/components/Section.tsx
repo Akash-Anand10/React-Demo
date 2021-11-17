@@ -1,13 +1,13 @@
 import styled from "styled-components";
-import { Draggable, Droppable } from "react-beautiful-dnd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import Card from "./Card";
 import { useState } from "react";
 import { useAppSelector } from "../hooks";
-import { removeSection, renameSection } from "../actions/boardActions";
-import AddTicket from "./addTicket";
+import { renameSection, setModalDetails } from "../actions/boardActions";
 import { useDispatch } from "react-redux";
+import AddTicket from "./addTicket";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 
 const SectionContainer = styled.div`
   width: 300px;
@@ -73,8 +73,13 @@ export default function Section({ sectionId, index }: SectionProps) {
   const onDeleteSectionHandler = () => {
     console.log("deleted section");
     dispatch(
-      removeSection({
-        sectionId: sectionId,
+      setModalDetails({
+        isModalOpen: true,
+        modalType: "DELETE_SECTION",
+        modalProps: {
+          modalText: "Confirm to delete the section ?",
+          sectionId: sectionId
+        }
       })
     );
   };

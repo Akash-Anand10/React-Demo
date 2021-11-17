@@ -18,7 +18,19 @@ export type Data = {
     },
     "allIds": string[]
   },
-  isDataLoaded: boolean
+  isDataLoaded: boolean,
+  modalDetails: {
+    isModalOpen: boolean,
+    modalType: ('DELETE_TASK' | 'DELETE_SECTION' | '')
+    modalProps: {
+      modalText: string,
+      sectionId: string,
+      ticketDetails?: {
+        id: string;
+        title?: string;
+    };
+    }
+  }
 }
 // export const data: Data = {
 //   "sections": {

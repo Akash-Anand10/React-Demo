@@ -9,7 +9,8 @@ import {
   REMOVE_TICKET_FROM_SECTION,
   RENAME_SECTION,
   EDIT_TICKET_TITLE,
-  SET_IS_DATA_LOADED
+  SET_IS_DATA_LOADED,
+  SET_MODAL_DETAILS
 } from "../actions/boardActions";
 import { Data } from "../models/initData";
 import produce from "immer";
@@ -23,7 +24,19 @@ let initialData: Data = {
     byId: {},
     allIds: [],
   },
-  isDataLoaded: false
+  isDataLoaded: false,
+  modalDetails: {
+    isModalOpen: false,
+    modalType: '',
+    modalProps: {
+      modalText: '',
+      sectionId: '',
+      ticketDetails: {
+        id: '',
+        title: ''
+      }
+    }
+  }
 };
 type stateType = typeof initialData;
 
@@ -117,6 +130,10 @@ const board = produce((draft: stateType, action) => {
 
     case SET_IS_DATA_LOADED:
       draft.isDataLoaded = action.payload.isDataLoaded
+      break;
+    
+    case SET_MODAL_DETAILS:
+      draft.modalDetails = action.payload
       break;
   }
 }, initialData);

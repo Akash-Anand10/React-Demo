@@ -3,13 +3,17 @@ import styled from "styled-components";
 import { useThunkDispatch } from "../hooks";
 import { addTicketToSection } from "../actions/boardActions";
 
-const EditorContainer = styled.div`
-  height: 70px;
+const EditorContainer = styled.div<{ opacity: number }>`
   max-height: 70px;
   background-color: white;
   padding: 7px;
   margin: 6px;
   border-radius: 5px;
+  opacity: ${({ opacity }) => opacity};
+  transition: ${({ opacity }) => {
+    if (opacity === 1) return `height linear 0.5s;`;
+    if (opacity === 0) return `height linear 0.3s;`;
+  }};
 `;
 
 const EditorTextBox = styled.input`
@@ -42,12 +46,15 @@ const AddTicket = ({ sectionId, setShowAddTicket }: EditSectionProps) => {
   const dispatch = useThunkDispatch();
 
   const onCloseHandler = () => {
-    setShowAddTicket(false);
+    setOpacity(0);
+    setTimeout(() => {
+      setShowAddTicket(false);
+    }, 300);
     console.log("closed");
   };
 
   const onSaveHandler = () => {
-    let id = Date.now().toString()
+    let id = Date.now().toString();
     console.log("saved", ticketTitle);
     dispatch(
       addTicketToSection({
@@ -58,21 +65,29 @@ const AddTicket = ({ sectionId, setShowAddTicket }: EditSectionProps) => {
         },
       })
     );
-    setShowAddTicket(false);
+    setOpacity(0);
+    setTimeout(() => {
+      setShowAddTicket(false);
+    }, 300);
   };
 
   const [ticketTitle, setticketTitle] = useState("");
+  const [opacity, setOpacity] = useState(0);
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setticketTitle(event.target.value);
   };
 
-  useEffect(()=>{
-    console.log(ticketTitle)
-  }, [ticketTitle])
+  useEffect(() => {
+    console.log(ticketTitle);
+  }, [ticketTitle]);
+
+  useEffect(() => {
+    setOpacity(1);
+  }, []);
 
   return (
-    <EditorContainer>
-      <div style={{width: "100%", justifyContent: "left"}}>
+    <EditorContainer opacity={opacity}>
+      <div style={{ width: "100%", justifyContent: "left" }}>
         <EditorTextBox
           placeholder="Enter Ticket Title.."
           value={ticketTitle}
@@ -84,7 +99,7 @@ const AddTicket = ({ sectionId, setShowAddTicket }: EditSectionProps) => {
         style={{
           display: "flex",
           paddingTop: "6px",
-          justifyContent: "space-between"
+          justifyContent: "space-between",
         }}
       >
         <AddSectionButton onClick={onSaveHandler}>Add Ticket</AddSectionButton>
@@ -95,7 +110,7 @@ const AddTicket = ({ sectionId, setShowAddTicket }: EditSectionProps) => {
 };
 
 type EditSectionProps = {
-  setShowAddTicket: Function,
-  sectionId: string
+  setShowAddTicket: Function;
+  sectionId: string;
 };
 export default AddTicket;

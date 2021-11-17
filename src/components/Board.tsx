@@ -7,10 +7,14 @@ import { useAppSelector } from "../hooks";
 import {
   moveTicketWithinSameSection,
   moveTicketFromOneSectionToAnother,
+  setModalDetails,
+  removeSection,
+  removeTicketFromSection,
 } from "../actions/boardActions";
 import { loadInitalData, moveSection } from "../actions/boardActions";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import Modal from "./Modal";
 
 const SectionsContainer = styled.div`
   display: flex;
@@ -99,6 +103,7 @@ export default function Board() {
   const sectionsData = useAppSelector((state) => state.board.sections);
   const isDataLoaded = useAppSelector((state) => state.board.isDataLoaded);
   const [showEditSectionName, setShowEditSectionName] = useState(false);
+  const modalDetails = useAppSelector((state) => state.board.modalDetails);
 
   const editSectionHandler = () => {
     console.log("edit section");
@@ -110,14 +115,75 @@ export default function Board() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDataLoaded]);
 
+  const handleModalOk = () => {
+    console.log("Modal was Confirmed");
+    if (modalDetails.modalType === "DELETE_SECTION") {
+      dispatch(
+        removeSection({
+          sectionId: modalDetails.modalProps.sectionId,
+        })
+      );
+    }
+    if (
+      modalDetails.modalType === "DELETE_TASK" &&
+      modalDetails.modalProps.ticketDetails !== null &&
+      modalDetails.modalProps.ticketDetails?.id !== ''
+    ) {
+      dispatch(
+        removeTicketFromSection({
+          sectionId: modalDetails.modalProps.sectionId,
+          ticketDetails: modalDetails.modalProps.ticketDetails,
+        })
+      );
+    }
+    dispatch(setModalDetails({
+      isModalOpen: false,
+      modalType: '',
+      modalProps: {
+        modalText: '',
+        sectionId: '',
+        ticketDetails: {
+          id: ''
+        }
+      }
+    }));
+  };
+
+  const handleModalCancel = () => {
+    console.log("Modal was Canceled");
+    dispatch(setModalDetails({
+      isModalOpen: false,
+      modalType: '',
+      modalProps: {
+        modalText: '',
+        sectionId: '',
+        ticketDetails: {
+          id: ''
+        }
+      }
+    }));
+  }; 
+
   const Sections = sectionsData.allIds?.map(
     (sectionId: string, index: number) => {
-      return <Section sectionId={sectionId} index={index} key={sectionId} />;
+      return (
+        <Section
+          sectionId={sectionId}
+          index={index}
+          key={sectionId}
+        />
+      );
     }
   );
 
   return isDataLoaded ? (
     <>
+      <Modal
+      TextContent={modalDetails.modalProps.modalText}
+      handleCancel={handleModalCancel}
+      handleOk={handleModalOk}
+    />
+      
       <SectionHeader className="board-header" />
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable
@@ -153,6 +219,6 @@ export default function Board() {
       </DragDropContext>
     </>
   ) : (
-      <Loader loaded={isDataLoaded} color="black" radius={30} zIndex={100}/>
+    <Loader loaded={isDataLoaded} color="black" radius={30} zIndex={100} />
   );
 }
