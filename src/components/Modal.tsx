@@ -1,16 +1,7 @@
-import { type } from "os";
 import { useEffect, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { useAppSelector } from "../hooks";
 
-const example = keyframes`
-  from {
-    opacity: 0%
-  }
-  to {
-    opacity: 100%
-  }
-`;
 
 const Overlay = styled.div`
   position: fixed;
